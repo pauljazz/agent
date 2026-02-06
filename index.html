@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -229,6 +230,7 @@
                 <line x1="600" y1="425" x2="600" y2="670" stroke="#667eea" stroke-width="3" stroke-dasharray="8,4" class="pulse"/>
                 <line x1="600" y1="425" x2="980" y2="670" stroke="#667eea" stroke-width="3" stroke-dasharray="8,4" class="pulse"/>
                 <line x1="600" y1="425" x2="120" y2="425" stroke="#667eea" stroke-width="3" stroke-dasharray="8,4" class="pulse"/>
+                <line x1="600" y1="425" x2="1080" y2="425" stroke="#667eea" stroke-width="3" stroke-dasharray="8,4" class="pulse"/>
             </g>
 
             <!-- Top Row - Business Intelligence Swarm -->
@@ -387,6 +389,27 @@
                 </text>
                 <text x="110" y="483" font-size="9" text-anchor="middle" fill="white">
                     ✓ Pre-arrival diagnosis
+                </text>
+            </g>
+
+            <!-- Agent 8: Growth & Acquisition (Right Side) -->
+            <g class="agent-card" onclick="showModal('agent8')">
+                <rect x="1000" y="355" width="180" height="140" rx="10" fill="#f97316" stroke="#ea580c" stroke-width="2"/>
+                <circle cx="1090" cy="390" r="8" fill="#fbbf24"/>
+                <text x="1090" y="415" font-size="14" font-weight="bold" text-anchor="middle" fill="white">
+                    AGENT 8
+                </text>
+                <text x="1090" y="435" font-size="13" text-anchor="middle" fill="white" font-weight="600">
+                    Growth &amp;
+                </text>
+                <text x="1090" y="450" font-size="13" text-anchor="middle" fill="white" font-weight="600">
+                    Acquisition
+                </text>
+                <text x="1090" y="471" font-size="9" text-anchor="middle" fill="white">
+                    ✓ Lead source ROI
+                </text>
+                <text x="1090" y="483" font-size="9" text-anchor="middle" fill="white">
+                    ✓ Market expansion
                 </text>
             </g>
 
@@ -580,6 +603,25 @@
                     { icon: "✅", text: "<span class='metric-highlight'>25-35% increase</span> in first-call resolution by helping techs bring right parts/tools" },
                     { icon: "🎓", text: "Accelerates training for new technicians through AI-assisted diagnostics" },
                     { icon: "🚫", text: "Reduces misdiagnosis rates that lead to unnecessary parts orders or return visits" }
+                ]
+            },
+            agent8: {
+                title: "Agent 8: Growth & Acquisition Engine",
+                subtitle: "Market Expansion Intelligence",
+                description: "Analyzes lead sources to identify which marketing channels deliver highest-margin customers, finds underserved neighborhoods for expansion, monitors competitor positioning, optimizes referral programs, and times seasonal campaigns for maximum conversion.",
+                color: "#f97316",
+                borderColor: "#ea580c",
+                capabilities: [
+                    { icon: "📊", text: "Tracks ROI by marketing channel (Google Ads, referrals, seasonal campaigns) to optimize spend" },
+                    { icon: "🗺️", text: "Geographic analysis to identify underserved zip codes with aging HVAC equipment" },
+                    { icon: "🔍", text: "Competitive intelligence on pricing, service areas, and review sentiment to find market gaps" },
+                    { icon: "🤝", text: "Referral optimization - identifies top referrers and automates incentive programs" }
+                ],
+                outcomes: [
+                    { icon: "💰", text: "<span class='metric-highlight'>25-35% improvement</span> in customer acquisition cost (CAC) through channel optimization" },
+                    { icon: "🎯", text: "<span class='metric-highlight'>40-50% increase</span> in lead quality by focusing on high-LTV customer profiles" },
+                    { icon: "📈", text: "<span class='metric-highlight'>20-30% growth</span> in new customer acquisition in targeted expansion zones" },
+                    { icon: "⭐", text: "Higher referral rates through systematic identification and cultivation of advocates" }
                 ]
             }
         };
