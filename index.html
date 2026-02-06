@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HVAC AI Agent Teams Architecture</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            min-height: 100vh;
+        }
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        svg {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+        .agent-card {
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .agent-card:hover rect {
+            filter: brightness(1.15);
+        }
+        .pulse {
+            animation: pulse 2s ease-in-out infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 0.2; }
+            50% { opacity: 0.6; }
+        }
+        
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.7);
+            backdrop-filter: blur(5px);
+            animation: fadeIn 0.3s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .modal-content {
+            background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+            margin: 5% auto;
+            padding: 0;
+            border-radius: 16px;
+            width: 90%;
+            max-width: 650px;
+            max-height: 85vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            animation: slideIn 0.3s ease;
+        }
+        
+        @keyframes slideIn {
+            from {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        
+        .modal-header {
+            padding: 30px;
+            color: white;
+            position: relative;
+        }
+        
+        .modal-body {
+            padding: 30px;
+            color: #2d3748;
+        }
+        
+        .close {
+            color: white;
+            position: absolute;
+            right: 20px;
+            top: 20px;
+            font-size: 32px;
+            font-weight: bold;
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.2);
+            transition: all 0.3s ease;
+        }
+        
+        .close:hover {
+            background: rgba(255,255,255,0.3);
+            transform: rotate(90deg);
+        }
+        
+        .agent-title {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+        
+        .agent-subtitle {
+            font-size: 16px;
+            opacity: 0.9;
+            font-weight: 500;
+        }
+        
+        .agent-description {
+            font-size: 16px;
+            line-height: 1.7;
+            margin-bottom: 25px;
+            color: #4a5568;
+        }
+        
+        .outcomes-section {
+            margin-top: 20px;
+        }
+        
+        .section-title {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 15px;
+            color: #2d3748;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .outcome-item {
+            display: flex;
+            align-items: start;
+            margin-bottom: 12px;
+            padding: 14px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            border-left: 3px solid;
+        }
+        
+        .outcome-icon {
+            font-size: 20px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+        
+        .outcome-text {
+            font-size: 14px;
+            line-height: 1.6;
+            color: #4a5568;
+        }
+        
+        .metric-highlight {
+            display: inline-block;
+            background: #fef3c7;
+            color: #92400e;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            font-size: 13px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <svg viewBox="0 0 1200 850" xmlns="http://www.w3.org/2000/svg" style="background: white;">
+            
+            <!-- Background -->
+            <rect width="1200" height="850" fill="#ffffff"/>
+            
+            <!-- Title -->
+            <text x="600" y="50" font-size="32" font-weight="bold" text-anchor="middle" fill="#2d3748">
+                AI Agent Teams: HVAC Profit Optimization Engine
+            </text>
+            <text x="600" y="75" font-size="14" text-anchor="middle" fill="#718096">
+                Autonomous Coordination • 24/7 Intelligence • Revenue Maximization (Click any agent for details)
+            </text>
+            
+            <!-- Central Hub - Team Lead -->
+            <g class="agent-card" onclick="showModal('lead')">
+                <circle cx="600" cy="425" r="85" fill="#667eea" opacity="0.15"/>
+                <circle cx="600" cy="425" r="65" fill="#667eea"/>
+                <circle cx="600" cy="425" r="60" fill="#764ba2"/>
+                <text x="600" y="415" font-size="16" font-weight="bold" text-anchor="middle" fill="white">
+                    TEAM LEAD
+                </text>
+                <text x="600" y="435" font-size="12" text-anchor="middle" fill="white">
+                    Orchestrator &amp;
+                </text>
+                <text x="600" y="450" font-size="12" text-anchor="middle" fill="white">
+                    Coordinator
+                </text>
+            </g>
+
+            <!-- Connection lines -->
+            <g opacity="0.25">
+                <line x1="600" y1="425" x2="220" y2="180" stroke="#667eea" stroke-width="3" stroke-dasharray="8,4" class="pulse"/>
+                <line x1="600" y1="425" x2="600" y2="180" stroke="#667eea" stroke-width="3" stroke-dasharray="8,4" class="pulse"/>
+                <line x1="600" y1="425" x2="980" y2="180" stroke="#667eea" stroke-width="3" stroke-dasharray="8,4" class="pulse"/>
+                <line x1="600" y1="425" x2="220" y2="670" stroke="#667eea" stroke-width="3" stroke-dasharray="8,4" class="pulse"/>
+                <line x1="600" y1="425" x2="600" y2="670" stroke="#667eea" stroke-width="3" stroke-dasharray="8,4" class="pulse"/>
+                <line x1="600" y1="425" x2="980" y2="670" stroke="#667eea" stroke-width="3" stroke-dasharray="8,4" class="pulse"/>
+                <line x1="600" y1="425" x2="120" y2="425" stroke="#667eea" stroke-width="3" stroke-dasharray="8,4" class="pulse"/>
+            </g>
+
+            <!-- Top Row - Business Intelligence Swarm -->
+            <rect x="50" y="105" width="1100" height="3" fill="#e2e8f0" rx="1.5"/>
+            <text x="600" y="130" font-size="18" font-weight="700" text-anchor="middle" fill="#2d3748">
+                BUSINESS INTELLIGENCE SWARM
+            </text>
+
+            <!-- Agent 1: Dynamic Pricing -->
+            <g class="agent-card" onclick="showModal('agent1')">
+                <rect x="140" y="150" width="180" height="140" rx="10" fill="#8b5cf6" stroke="#6d28d9" stroke-width="2"/>
+                <circle cx="230" cy="185" r="8" fill="#fbbf24"/>
+                <text x="230" y="210" font-size="14" font-weight="bold" text-anchor="middle" fill="white">
+                    AGENT 1
+                </text>
+                <text x="230" y="230" font-size="13" text-anchor="middle" fill="white" font-weight="600">
+                    Dynamic Pricing
+                </text>
+                <text x="230" y="247" font-size="11" text-anchor="middle" fill="#e9d5ff">
+                    Optimizer
+                </text>
+                <text x="230" y="268" font-size="9" text-anchor="middle" fill="white">
+                    ✓ Real-time demand pricing
+                </text>
+                <text x="230" y="280" font-size="9" text-anchor="middle" fill="white">
+                    ✓ Upsell identification
+                </text>
+            </g>
+
+            <!-- Agent 2: Route Optimizer -->
+            <g class="agent-card" onclick="showModal('agent2')">
+                <rect x="510" y="150" width="180" height="140" rx="10" fill="#10b981" stroke="#059669" stroke-width="2"/>
+                <circle cx="600" cy="185" r="8" fill="#fbbf24"/>
+                <text x="600" y="210" font-size="14" font-weight="bold" text-anchor="middle" fill="white">
+                    AGENT 2
+                </text>
+                <text x="600" y="230" font-size="13" text-anchor="middle" fill="white" font-weight="600">
+                    Route &amp; Schedule
+                </text>
+                <text x="600" y="247" font-size="11" text-anchor="middle" fill="#d1fae5">
+                    Optimizer
+                </text>
+                <text x="600" y="268" font-size="9" text-anchor="middle" fill="white">
+                    ✓ Minimize drive time
+                </text>
+                <text x="600" y="280" font-size="9" text-anchor="middle" fill="white">
+                    ✓ Maximize revenue/hour
+                </text>
+            </g>
+
+            <!-- Agent 3: Inventory Intelligence -->
+            <g class="agent-card" onclick="showModal('agent3')">
+                <rect x="880" y="150" width="180" height="140" rx="10" fill="#ec4899" stroke="#db2777" stroke-width="2"/>
+                <circle cx="970" cy="185" r="8" fill="#fbbf24"/>
+                <text x="970" y="210" font-size="14" font-weight="bold" text-anchor="middle" fill="white">
+                    AGENT 3
+                </text>
+                <text x="970" y="230" font-size="13" text-anchor="middle" fill="white" font-weight="600">
+                    Inventory &amp; Parts
+                </text>
+                <text x="970" y="247" font-size="11" text-anchor="middle" fill="#fce7f3">
+                    Intelligence
+                </text>
+                <text x="970" y="268" font-size="9" text-anchor="middle" fill="white">
+                    ✓ Predictive stocking
+                </text>
+                <text x="970" y="280" font-size="9" text-anchor="middle" fill="white">
+                    ✓ Supplier optimization
+                </text>
+            </g>
+
+            <!-- Bottom Row - Operational Excellence -->
+            <rect x="50" y="545" width="1100" height="3" fill="#e2e8f0" rx="1.5"/>
+            <text x="600" y="570" font-size="18" font-weight="700" text-anchor="middle" fill="#2d3748">
+                OPERATIONAL EXCELLENCE TEAM
+            </text>
+
+            <!-- Agent 4: Customer Value -->
+            <g class="agent-card" onclick="showModal('agent4')">
+                <rect x="140" y="590" width="180" height="140" rx="10" fill="#f59e0b" stroke="#d97706" stroke-width="2"/>
+                <circle cx="230" cy="625" r="8" fill="#8b5cf6"/>
+                <text x="230" y="650" font-size="14" font-weight="bold" text-anchor="middle" fill="white">
+                    AGENT 4
+                </text>
+                <text x="230" y="670" font-size="13" text-anchor="middle" fill="white" font-weight="600">
+                    Customer Value
+                </text>
+                <text x="230" y="687" font-size="11" text-anchor="middle" fill="#fef3c7">
+                    Maximizer
+                </text>
+                <text x="230" y="708" font-size="9" text-anchor="middle" fill="white">
+                    ✓ LTV scoring
+                </text>
+                <text x="230" y="720" font-size="9" text-anchor="middle" fill="white">
+                    ✓ Churn prevention
+                </text>
+            </g>
+
+            <!-- Agent 5: Quality Control -->
+            <g class="agent-card" onclick="showModal('agent5')">
+                <rect x="510" y="590" width="180" height="140" rx="10" fill="#3b82f6" stroke="#2563eb" stroke-width="2"/>
+                <circle cx="600" cy="625" r="8" fill="#8b5cf6"/>
+                <text x="600" y="650" font-size="14" font-weight="bold" text-anchor="middle" fill="white">
+                    AGENT 5
+                </text>
+                <text x="600" y="670" font-size="13" text-anchor="middle" fill="white" font-weight="600">
+                    Quality Control
+                </text>
+                <text x="600" y="687" font-size="11" text-anchor="middle" fill="#dbeafe">
+                    Monitor
+                </text>
+                <text x="600" y="708" font-size="9" text-anchor="middle" fill="white">
+                    ✓ Work order review
+                </text>
+                <text x="600" y="720" font-size="9" text-anchor="middle" fill="white">
+                    ✓ Training insights
+                </text>
+            </g>
+
+            <!-- Agent 6: Cash Flow -->
+            <g class="agent-card" onclick="showModal('agent6')">
+                <rect x="880" y="590" width="180" height="140" rx="10" fill="#a855f7" stroke="#9333ea" stroke-width="2"/>
+                <circle cx="970" cy="625" r="8" fill="#fbbf24"/>
+                <text x="970" y="650" font-size="14" font-weight="bold" text-anchor="middle" fill="white">
+                    AGENT 6
+                </text>
+                <text x="970" y="670" font-size="13" text-anchor="middle" fill="white" font-weight="600">
+                    Cash Flow
+                </text>
+                <text x="970" y="687" font-size="11" text-anchor="middle" fill="#f3e8ff">
+                    Optimizer
+                </text>
+                <text x="970" y="708" font-size="9" text-anchor="middle" fill="white">
+                    ✓ Collections priority
+                </text>
+                <text x="970" y="720" font-size="9" text-anchor="middle" fill="white">
+                    ✓ Cash forecasting
+                </text>
+            </g>
+
+            <!-- Agent 7: Diagnostic Specialist (Left Side) -->
+            <g class="agent-card" onclick="showModal('agent7')">
+                <rect x="20" y="355" width="180" height="140" rx="10" fill="#14b8a6" stroke="#0d9488" stroke-width="2"/>
+                <circle cx="110" cy="390" r="8" fill="#fbbf24"/>
+                <text x="110" y="415" font-size="14" font-weight="bold" text-anchor="middle" fill="white">
+                    AGENT 7
+                </text>
+                <text x="110" y="435" font-size="13" text-anchor="middle" fill="white" font-weight="600">
+                    Equipment
+                </text>
+                <text x="110" y="450" font-size="13" text-anchor="middle" fill="white" font-weight="600">
+                    Diagnostic
+                </text>
+                <text x="110" y="471" font-size="9" text-anchor="middle" fill="white">
+                    ✓ Pattern recognition
+                </text>
+                <text x="110" y="483" font-size="9" text-anchor="middle" fill="white">
+                    ✓ Pre-arrival diagnosis
+                </text>
+            </g>
+
+            <!-- Bottom Banner -->
+            <rect x="150" y="775" width="900" height="60" rx="8" fill="#1e293b"/>
+            <text x="600" y="802" font-size="15" font-weight="700" text-anchor="middle" fill="#fbbf24">
+                24/7 AUTONOMOUS COORDINATION • REAL-TIME PROFIT OPTIMIZATION
+            </text>
+            <text x="600" y="823" font-size="12" text-anchor="middle" fill="#cbd5e1">
+                Powered by Claude Opus 4.6 Agent Teams
+            </text>
+            
+        </svg>
+    </div>
+
+    <!-- Modal -->
+    <div id="agentModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header" id="modalHeader">
+                <span class="close" onclick="closeModal()">&times;</span>
+                <div class="agent-title" id="modalTitle"></div>
+                <div class="agent-subtitle" id="modalSubtitle"></div>
+            </div>
+            <div class="modal-body">
+                <div class="agent-description" id="modalDescription"></div>
+                <div class="outcomes-section">
+                    <div class="section-title">
+                        <span>🎯</span> Key Capabilities
+                    </div>
+                    <div id="modalCapabilities"></div>
+                </div>
+                <div class="outcomes-section">
+                    <div class="section-title">
+                        <span>📊</span> Expected Outcomes
+                    </div>
+                    <div id="modalOutcomes"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const agentData = {
+            lead: {
+                title: "Team Lead Agent",
+                subtitle: "Central Orchestrator & Coordinator",
+                description: "The Team Lead coordinates all agent activities, assigns tasks based on priority and capability, resolves conflicts between agents, and ensures the entire system works toward unified profitability goals. It monitors performance metrics across all agents and dynamically reallocates resources.",
+                color: "#764ba2",
+                borderColor: "#8b5cf6",
+                capabilities: [
+                    { icon: "🎯", text: "Delegates tasks to specialized agents based on real-time business priorities" },
+                    { icon: "🔄", text: "Coordinates cross-functional workflows (e.g., pricing informs routing, inventory affects scheduling)" },
+                    { icon: "📡", text: "Monitors all agent performance and adjusts strategies dynamically" },
+                    { icon: "⚖️", text: "Resolves conflicts when agents have competing objectives" }
+                ],
+                outcomes: [
+                    { icon: "💰", text: "Achieves <span class='metric-highlight'>15-25% increase</span> in overall business profitability through coordinated optimization" },
+                    { icon: "⚡", text: "Reduces decision latency by enabling real-time autonomous responses to market changes" },
+                    { icon: "🔍", text: "Identifies systemic inefficiencies that single agents cannot detect" },
+                    { icon: "📈", text: "Continuously improves agent collaboration through performance feedback loops" }
+                ]
+            },
+            agent1: {
+                title: "Agent 1: Dynamic Pricing Optimizer",
+                subtitle: "Revenue Intelligence Engine",
+                description: "Analyzes demand patterns, competitor pricing, weather forecasts, customer history, and urgency levels to set optimal pricing for every service call. Identifies upsell opportunities and adjusts pricing in real-time based on technician availability and customer lifetime value.",
+                color: "#8b5cf6",
+                borderColor: "#6d28d9",
+                capabilities: [
+                    { icon: "🌡️", text: "Integrates weather data to anticipate demand spikes (e.g., AC failures during heatwaves)" },
+                    { icon: "🎯", text: "Scores customers by LTV and adjusts pricing/service level accordingly" },
+                    { icon: "🔄", text: "Dynamically prices emergency calls vs. routine maintenance based on capacity" },
+                    { icon: "💡", text: "Flags high-probability upsell opportunities (maintenance plans, equipment upgrades)" }
+                ],
+                outcomes: [
+                    { icon: "💵", text: "<span class='metric-highlight'>8-15% revenue increase</span> from optimized pricing without losing customers" },
+                    { icon: "📊", text: "<span class='metric-highlight'>30% increase</span> in maintenance contract conversions through targeted pricing" },
+                    { icon: "🎁", text: "Captures premium pricing during peak demand while maintaining competitive rates during slow periods" },
+                    { icon: "🔮", text: "Predicts customer price sensitivity to maximize willingness to pay" }
+                ]
+            },
+            agent2: {
+                title: "Agent 2: Route & Schedule Optimizer",
+                subtitle: "Operational Efficiency Engine",
+                description: "Minimizes drive time between service calls, balances technician utilization, predicts traffic patterns, and dynamically reschedules based on emergency calls or delays. Ensures the right technician with the right skills gets to each job at the optimal time.",
+                color: "#10b981",
+                borderColor: "#059669",
+                capabilities: [
+                    { icon: "🗺️", text: "Real-time route optimization using traffic data, job locations, and technician skills" },
+                    { icon: "⏱️", text: "Predictive scheduling based on historical job durations and complexity" },
+                    { icon: "🚨", text: "Autonomous rescheduling when emergencies arise, minimizing revenue loss" },
+                    { icon: "👥", text: "Load balances across technicians to prevent burnout and maximize billable hours" }
+                ],
+                outcomes: [
+                    { icon: "⏰", text: "<span class='metric-highlight'>20-30% reduction</span> in drive time, increasing jobs per day per technician" },
+                    { icon: "💰", text: "<span class='metric-highlight'>15-20% increase</span> in billable hours through better scheduling density" },
+                    { icon: "😊", text: "Higher customer satisfaction from accurate arrival windows and fewer delays" },
+                    { icon: "⛽", text: "Significant fuel cost savings from optimized routing" }
+                ]
+            },
+            agent3: {
+                title: "Agent 3: Inventory & Parts Intelligence",
+                subtitle: "Supply Chain Optimization Engine",
+                description: "Predicts which parts will be needed for upcoming jobs, pre-stocks technician trucks, identifies when equipment is likely to fail, negotiates with suppliers, and eliminates costly same-day parts runs that destroy margins.",
+                color: "#ec4899",
+                borderColor: "#db2777",
+                capabilities: [
+                    { icon: "🔮", text: "Predictive analytics on equipment failure based on age, brand, usage patterns" },
+                    { icon: "📦", text: "Pre-stocks trucks with high-probability parts before technicians leave the shop" },
+                    { icon: "🤝", text: "Monitors supplier pricing and availability, suggests alternative vendors" },
+                    { icon: "📊", text: "Tracks parts usage patterns to identify overstock/understock situations" }
+                ],
+                outcomes: [
+                    { icon: "🎯", text: "<span class='metric-highlight'>40-50% reduction</span> in emergency parts runs that eat profit margins" },
+                    { icon: "💵", text: "<span class='metric-highlight'>10-15% savings</span> on parts costs through optimized supplier relationships" },
+                    { icon: "✅", text: "<span class='metric-highlight'>25-30% increase</span> in first-call resolution rates (completing jobs on first visit)" },
+                    { icon: "📉", text: "Reduces inventory carrying costs while improving parts availability" }
+                ]
+            },
+            agent4: {
+                title: "Agent 4: Customer Value Maximizer",
+                subtitle: "Lifetime Value Intelligence Engine",
+                description: "Scores every customer by lifetime value potential, identifies who should get maintenance contracts, predicts churn risk, routes high-value customers to top technicians, and triggers retention campaigns before customers leave.",
+                color: "#f59e0b",
+                borderColor: "#d97706",
+                capabilities: [
+                    { icon: "🎯", text: "LTV scoring based on property value, equipment age, service history, payment behavior" },
+                    { icon: "🔔", text: "Identifies customers with old equipment ready for replacement (high-value opportunities)" },
+                    { icon: "⚠️", text: "Detects churn signals (declining service frequency, price complaints) and triggers retention" },
+                    { icon: "👔", text: "Routes VIP customers to your most experienced, personable technicians" }
+                ],
+                outcomes: [
+                    { icon: "💎", text: "<span class='metric-highlight'>35-45% increase</span> in maintenance contract sales through targeted outreach" },
+                    { icon: "🔄", text: "<span class='metric-highlight'>20-25% improvement</span> in customer retention rates" },
+                    { icon: "💰", text: "<span class='metric-highlight'>30-40% increase</span> in equipment replacement revenue from timely customer targeting" },
+                    { icon: "📈", text: "Higher customer satisfaction among high-value clients, driving referrals" }
+                ]
+            },
+            agent5: {
+                title: "Agent 5: Quality Control Monitor",
+                subtitle: "Service Excellence Engine",
+                description: "Reviews every completed work order in real-time, flags incomplete documentation, identifies missed upsell opportunities, detects technicians who need training, and prevents costly callback visits by ensuring jobs are done right the first time.",
+                color: "#3b82f6",
+                borderColor: "#2563eb",
+                capabilities: [
+                    { icon: "📋", text: "Real-time work order review for completeness, accuracy, and compliance" },
+                    { icon: "🎓", text: "Identifies training needs per technician based on recurring issues or slow job times" },
+                    { icon: "💡", text: "Flags missed upsell opportunities (e.g., customer declined maintenance plan but has old equipment)" },
+                    { icon: "🔍", text: "Compares job times across technicians to identify efficiency outliers" }
+                ],
+                outcomes: [
+                    { icon: "🔁", text: "<span class='metric-highlight'>30-40% reduction</span> in callback visits (jobs requiring return trips)" },
+                    { icon: "💰", text: "Prevents warranty claims from incomplete work, protecting profit margins" },
+                    { icon: "⚡", text: "<span class='metric-highlight'>15-20% improvement</span> in technician efficiency through targeted coaching" },
+                    { icon: "⭐", text: "Higher customer reviews and ratings from consistently excellent service" }
+                ]
+            },
+            agent6: {
+                title: "Agent 6: Cash Flow Optimizer",
+                subtitle: "Financial Intelligence Engine",
+                description: "Prioritizes collection calls based on customer payment history, automates invoice follow-ups with personalized messaging, identifies customers for financing options, and forecasts cash flow to prevent shortfalls.",
+                color: "#a855f7",
+                borderColor: "#9333ea",
+                capabilities: [
+                    { icon: "📞", text: "Prioritizes collections based on aging, customer history, and likelihood to pay" },
+                    { icon: "✉️", text: "Automates personalized invoice reminders (gentle for good customers, firm for slow payers)" },
+                    { icon: "💳", text: "Identifies customers eligible for financing to convert declined high-value jobs" },
+                    { icon: "📊", text: "Forecasts 30/60/90-day cash flow to anticipate shortfalls" }
+                ],
+                outcomes: [
+                    { icon: "⏰", text: "<span class='metric-highlight'>25-35% reduction</span> in days sales outstanding (DSO)" },
+                    { icon: "💵", text: "<span class='metric-highlight'>15-20% increase</span> in collected revenue through proactive follow-up" },
+                    { icon: "📈", text: "Improved cash flow predictability for better business planning" },
+                    { icon: "🎯", text: "<span class='metric-highlight'>10-15% increase</span> in closed high-ticket jobs through strategic financing offers" }
+                ]
+            },
+            agent7: {
+                title: "Agent 7: Equipment Diagnostic Specialist",
+                subtitle: "Technical Intelligence Engine",
+                description: "Analyzes your entire service history to identify patterns in equipment failures, recommends pre-arrival diagnoses to technicians, builds a knowledge base of 'if you see X, check Y first', and reduces diagnostic time on site.",
+                color: "#14b8a6",
+                borderColor: "#0d9488",
+                capabilities: [
+                    { icon: "🧠", text: "Pattern recognition across thousands of service calls to predict root causes" },
+                    { icon: "📱", text: "Provides technicians pre-arrival diagnostic insights based on customer symptoms" },
+                    { icon: "📚", text: "Builds searchable knowledge base of equipment-specific troubleshooting guides" },
+                    { icon: "🔧", text: "Suggests most likely fixes based on brand, model, age, and reported symptoms" }
+                ],
+                outcomes: [
+                    { icon: "⚡", text: "<span class='metric-highlight'>20-30% reduction</span> in on-site diagnostic time" },
+                    { icon: "✅", text: "<span class='metric-highlight'>25-35% increase</span> in first-call resolution by helping techs bring right parts/tools" },
+                    { icon: "🎓", text: "Accelerates training for new technicians through AI-assisted diagnostics" },
+                    { icon: "🚫", text: "Reduces misdiagnosis rates that lead to unnecessary parts orders or return visits" }
+                ]
+            }
+        };
+
+        function showModal(agentId) {
+            const modal = document.getElementById('agentModal');
+            const data = agentData[agentId];
+            
+            // Set header color
+            document.getElementById('modalHeader').style.background = 
+                `linear-gradient(135deg, ${data.color} 0%, ${data.borderColor} 100%)`;
+            
+            // Set content
+            document.getElementById('modalTitle').textContent = data.title;
+            document.getElementById('modalSubtitle').textContent = data.subtitle;
+            document.getElementById('modalDescription').textContent = data.description;
+            
+            // Set capabilities
+            const capabilitiesHTML = data.capabilities.map(cap => 
+                `<div class="outcome-item" style="border-left-color: ${data.color}">
+                    <div class="outcome-icon">${cap.icon}</div>
+                    <div class="outcome-text">${cap.text}</div>
+                </div>`
+            ).join('');
+            document.getElementById('modalCapabilities').innerHTML = capabilitiesHTML;
+            
+            // Set outcomes
+            const outcomesHTML = data.outcomes.map(outcome => 
+                `<div class="outcome-item" style="border-left-color: ${data.borderColor}">
+                    <div class="outcome-icon">${outcome.icon}</div>
+                    <div class="outcome-text">${outcome.text}</div>
+                </div>`
+            ).join('');
+            document.getElementById('modalOutcomes').innerHTML = outcomesHTML;
+            
+            modal.style.display = 'block';
+        }
+
+        function closeModal() {
+            document.getElementById('agentModal').style.display = 'none';
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('agentModal');
+            if (event.target == modal) {
+                closeModal();
+            }
+        }
+
+        // Close modal on escape key
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                closeModal();
+            }
+        });
+    </script>
+</body>
+</html>
